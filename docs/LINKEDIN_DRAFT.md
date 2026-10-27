@@ -1,6 +1,6 @@
 # LinkedIn project explanation — draft
 
-We built **FairShift — Saakshi AI** for PromptWars 2026 at SRMIST, aligned with UN SDG 8: Decent Work and Economic Growth.
+We built **NYAVERIS AI** for PromptWars 2026 at SRMIST, aligned with UN SDG 8: Decent Work and Economic Growth.
 
 The idea: workers need more than a record of attendance. They need a clear way to understand a pay difference, raise a safety concern and see what happened next.
 

@@ -16,7 +16,7 @@ class ErrorBoundary extends React.Component<
       <main className="fatal">
         <h1>We couldn’t open this view.</h1>
         <p>Your stored records are safe. Reload the page to try again.</p>
-        <button onClick={() => location.reload()}>Reload FairShift</button>
+        <button onClick={() => location.reload()}>Reload NYAVERIS AI</button>
       </main>
     ) : (
       this.props.children

@@ -1,4 +1,4 @@
-# FairShift — implementation plan
+# NYAVERIS AI — implementation plan
 
 1. Foundation: React/Vite/TypeScript, Express, design tokens, shared deterministic engines.
 2. Database: dedicated Supabase project, normalized schema, membership RLS, transactional RPCs and synthetic seed.

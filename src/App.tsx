@@ -126,15 +126,18 @@ const iconFor = {
 };
 function Brand({ light = false }: { light?: boolean }) {
   return (
-    <Link className={`brand ${light ? "brand-light" : ""}`} to="/">
-      <span className="brand-symbol">
+    <Link
+      className={`brand ${light ? "brand-light" : ""}`}
+      to="/"
+      aria-label="NYAVERIS AI home"
+    >
+      <span className="brand-symbol" aria-hidden="true">
         <span />
         <span />
         <span />
       </span>
-      <span>
-        fairshift<span className="brand-dot">.</span>
-        <small>SAAKSHI AI</small>
+      <span className="brand-wordmark">
+        NYAVERIS<span className="brand-ai">AI</span>
       </span>
     </Link>
   );
@@ -279,7 +282,7 @@ export default function App() {
       })
       .catch(() => {
         if (active)
-          setError("Cannot reach the FairShift API. Start the backend and retry.");
+          setError("Cannot reach the NYAVERIS AI service. Please retry.");
       });
     return () => {
       active = false;
@@ -915,7 +918,7 @@ export default function App() {
       <div className="page-heading">
         <div>
           <div className="eyebrow teal">
-            FAIRSHIFT / {org?.sector_id.toUpperCase()}
+            NYAVERIS AI / {org?.sector_id.toUpperCase()}
           </div>
           <h1>{title}</h1>
           {subtitle && <p>{subtitle}</p>}
@@ -2426,6 +2429,9 @@ export default function App() {
                 <br />
                 <span>A stronger voice.</span>
               </h1>
+              <p className="brand-tagline">
+                Fairness You Can Trace. Trust You Can Prove.
+              </p>
               <p>{t.landingSub}</p>
               <div className="button-row">
                 <Button
@@ -2455,7 +2461,9 @@ export default function App() {
             </div>
             <div className="hero-product">
               <div className="hero-product-head">
-                <span className="mini-brand">f.</span>
+                <span className="mini-brand" aria-label="NYAVERIS AI">
+                  N<span>AI</span>
+                </span>
                 <span>Your fairness, in focus</span>
                 <Badge tone="green">Live comparison</Badge>
               </div>
@@ -2661,7 +2669,7 @@ export default function App() {
                       )}
                     </span>
                     <div>
-                      <strong>{org?.name || "FairShift"}</strong>
+                      <strong>{org?.name || "NYAVERIS AI"}</strong>
                       <small>{admin ? t.admin : t.worker}</small>
                     </div>
                     <span className="workspace-live" />
@@ -2738,7 +2746,7 @@ export default function App() {
                       </span>
                       <span>
                         <strong>
-                          {workspace?.member.display_name || "FairShift"}
+                          {workspace?.member.display_name || "NYAVERIS AI"}
                         </strong>
                         <small>
                           {admin ? "Administrator" : "Worker account"}
@@ -2882,7 +2890,7 @@ export default function App() {
                       <ShieldCheck size={13} /> Fairness You Can Trace. Trust
                       You Can Prove.
                     </span>
-                    <span>FairShift · Saakshi AI</span>
+                    <span>NYAVERIS AI</span>
                   </div>
                 </div>
                 <button

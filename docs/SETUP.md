@@ -4,7 +4,7 @@ Requirements: Node.js 24, npm, and a dedicated Supabase project. Never run the s
 
 ## Run this configured workspace
 
-The ignored `.env` in the original workspace already points at the dedicated FairShift project and contains randomly generated synthetic demo/gateway account passwords. Do not commit or copy it into public documentation.
+The ignored `.env` in the original workspace already points at the dedicated application project and contains randomly generated synthetic demo/gateway account passwords. Do not commit or copy it into public documentation.
 
 ```powershell
 npm ci

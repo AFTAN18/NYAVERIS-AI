@@ -1,8 +1,8 @@
-# FairShift — Saakshi AI
+# NYAVERIS AI
 
-**Every hour verified. Every concern heard. Every action accounted for.**
+**Fairness You Can Trace. Trust You Can Prove.**
 
-FairShift is a worker-first fairness and accountability platform built for **PromptWars 2026**, ACM Student Chapter, SRMIST, aligned with **UN SDG 8: Decent Work and Economic Growth**. It supports construction sites and healthcare departments through one tenant-aware application.
+NYAVERIS AI is a worker-first fairness and accountability platform built for **PromptWars 2026**, ACM Student Chapter, SRMIST, aligned with **UN SDG 8: Decent Work and Economic Growth**. It implements the official **FairShift: Decent Work Platform** hackathon problem statement. It supports construction sites and healthcare departments through one tenant-aware application.
 
 Workers should not need to decode payroll spreadsheets or repeatedly explain an unresolved hazard. The **Fairness Twin + ProofLoop Engine** compares confirmed work with employer payroll, explains discrepancies, opens a review, records the employer response, and gives the worker the final confirmation step.
 
@@ -71,7 +71,7 @@ Mobile layouts, keyboard focus, semantic controls, labeled dialogs, regional lan
 
 ## SDG 8 impact
 
-FairShift makes potential underpayment visible, gives workers an actionable review mechanism, helps employers document corrections, provides a privacy-conscious path for hazards, and detects preventable scheduling risks. The employer sees actionable records while the worker keeps a voice in resolution. See the [demonstration guide](docs/DEMO.md).
+NYAVERIS AI makes potential underpayment visible, gives workers an actionable review mechanism, helps employers document corrections, provides a privacy-conscious path for hazards, and detects preventable scheduling risks. The employer sees actionable records while the worker keeps a voice in resolution. See the [demonstration guide](docs/DEMO.md).
 
 ## Scope and known limitations
 

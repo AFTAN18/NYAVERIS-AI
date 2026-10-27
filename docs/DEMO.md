@@ -1,4 +1,4 @@
-# FairShift demonstration guide
+# NYAVERIS AI demonstration guide
 
 Use the dedicated synthetic project. Open the deployed application when verified, or http://127.0.0.1:5173 locally. Demo actions persist; closing a case does not reset it. Keep the 26 October construction scenario open until the presentation. Automated tests create separate QA shifts, leaving that primary example available.
 

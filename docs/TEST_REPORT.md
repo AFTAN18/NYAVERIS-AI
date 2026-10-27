@@ -24,7 +24,7 @@ A later run exposed an asynchronous refresh that could close a newly opened Repl
 
 ## External verification limits
 
-- Supabase is configured and all three migrations are applied to the dedicated FairShift project. Its security advisor reports two intentional informational notices for private deny-all tables and a warning that leaked-password protection is disabled. Review that Auth setting before a real workforce rollout.
+- Supabase is configured and all three migrations are applied to the dedicated application project. Its security advisor reports two intentional informational notices for private deny-all tables and a warning that leaked-password protection is disabled. Review that Auth setting before a real workforce rollout.
 - Gemini is intentionally unconfigured at the owner's request; English/Tamil/Hindi fallback behavior is tested. Provider-generated output was not tested against a live key.
 - Google CLI authentication and target-project access were verified. The latest deployment prerequisite checks still returned `billingEnabled=false` for `project-7b32515b-99e7-45cb-a03`, despite deployment approval. No verified Cloud Run URL exists.
 - Docker is unavailable locally. The production build and same-origin frontend/API service were tested directly; the Dockerfile is prepared but an image was not executed.

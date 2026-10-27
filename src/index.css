@@ -16,6 +16,155 @@
   --amber: #956113;
   --radius: 15px;
 }
+/* NYAVERIS AI wordmark: the established palette with a precise, geometric N. */
+.brand .brand-wordmark {
+  font-size: 21px;
+  letter-spacing: 1.15px;
+  font-weight: 650;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+}
+.brand .brand-ai {
+  font-size: 9px;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-left: 7px;
+  padding: 4px 5px;
+  border: 1px solid #82ad9e;
+  border-radius: 4px;
+  color: #087b65;
+  background: #e9f6ee;
+  line-height: 1;
+}
+.brand.brand-light .brand-ai {
+  color: #c5e998;
+  border-color: #617c63;
+  background: #ffffff08;
+}
+.brand .brand-symbol {
+  position: relative;
+  display: block;
+  width: 28px;
+  height: 30px;
+  transform: none;
+  flex-shrink: 0;
+}
+.brand .brand-symbol span {
+  position: absolute;
+  display: block;
+  width: 4px;
+  height: 26px;
+  top: 2px;
+  left: 3px;
+  border-radius: 1px;
+}
+.brand .brand-symbol span:nth-child(2) {
+  width: 4px;
+  height: 31px;
+  top: 0;
+  left: 12px;
+  transform: rotate(-32deg);
+}
+.brand .brand-symbol span:nth-child(3) {
+  width: 4px;
+  height: 26px;
+  top: 2px;
+  left: auto;
+  right: 3px;
+}
+.hero-copy .brand-tagline {
+  font-size: 13px;
+  line-height: 1.7;
+  font-weight: 600;
+  letter-spacing: 0.15px;
+  color: #406449;
+  margin-bottom: 15px;
+  max-width: 430px;
+}
+.mini-brand > span {
+  font-size: 5px;
+  letter-spacing: 0.5px;
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+}
+.hero-product-head .mini-brand {
+  position: relative;
+  font-size: 19px;
+  letter-spacing: 0.4px;
+}
+.workspace-footer > span:first-child {
+  min-width: 0;
+  flex: 1;
+}
+@media (max-width: 940px) and (min-width: 701px) {
+  .sidebar .brand {
+    gap: 7px;
+    margin-left: 5px;
+  }
+  .sidebar .brand .brand-wordmark {
+    font-size: 17px;
+    letter-spacing: 0.65px;
+  }
+  .sidebar .brand .brand-symbol {
+    width: 23px;
+    height: 27px;
+  }
+  .sidebar .brand .brand-ai {
+    font-size: 7px;
+    padding: 3px;
+    margin-left: 5px;
+  }
+  .sidebar .brand .brand-symbol span:nth-child(2) {
+    left: 10px;
+    height: 29px;
+  }
+}
+@media (max-width: 700px) {
+  .landing-nav .brand {
+    gap: 8px;
+  }
+  .landing-nav .brand .brand-wordmark {
+    font-size: 18px;
+    letter-spacing: 0.65px;
+  }
+  .landing-nav .brand .brand-ai {
+    font-size: 7px;
+    padding: 3px;
+    margin-left: 5px;
+  }
+  .landing-nav .brand .brand-symbol {
+    width: 23px;
+    height: 27px;
+  }
+  .landing-nav .brand .brand-symbol span:nth-child(2) {
+    left: 10px;
+    height: 29px;
+  }
+  .hero-copy .brand-tagline {
+    font-size: 12px;
+  }
+  .landing footer .brand .brand-wordmark {
+    font-size: 18px;
+    letter-spacing: 0.75px;
+  }
+}
+@media (max-width: 370px) {
+  .landing-nav .brand .brand-wordmark {
+    font-size: 16px;
+    letter-spacing: 0.5px;
+  }
+  .landing-nav .brand {
+    gap: 6px;
+  }
+  .landing-nav .brand .brand-symbol {
+    width: 21px;
+  }
+  .landing-nav .brand .brand-ai {
+    margin-left: 4px;
+  }
+}
 * {
   box-sizing: border-box;
 }
