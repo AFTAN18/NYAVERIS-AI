@@ -173,4 +173,9 @@ check(
   reports.data?.length === 0,
   "admin cannot read another tenant safety cases",
 );
+check(!!(await admin.rpc('save_shift', {
+  p_id: null, p_org: build, p_worker: '20000000-0000-4000-8000-000000000001',
+  p_start: '2026-10-20T08:00:00.400+05:30', p_end: '2026-10-20T18:30:00.400+05:30',
+  p_break: 30, p_location: 'Invalid sub-minute boundary QA',
+})).error, 'direct admin RPC cannot bypass exact whole-minute validation');
 console.log(`${passed} live Supabase RLS/security assertions passed.`);

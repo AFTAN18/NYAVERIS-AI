@@ -24,17 +24,17 @@
 - [x] TypeScript and production build executed.
 - [x] Dependency vulnerability scan performed; patched dependencies pinned.
 - [x] Secrets excluded from Git, Docker and Cloud Build upload contexts.
-- [ ] Final test counts and production smoke results recorded in TEST_REPORT.md.
+- [x] Final test counts and production smoke results recorded in TEST_REPORT.md: 36 unit/API tests, 8 browser tests and 23 live RLS assertions passed.
 - [ ] Docker image run (Docker is not installed locally; Cloud Build can build from source).
 
 ## Repository and hosting
 
-- [ ] All final source published to public `https://github.com/AFTAN18/FAIRSHIFT.git`.
-- [ ] Exactly one remote branch, `main`, verified after publication.
-- [ ] Initial tracked source size strictly below 10 MB, measured after staging.
+- [x] Application source published to public `https://github.com/AFTAN18/FAIRSHIFT.git`; final verification documentation and constraint hardening committed on the same branch.
+- [x] Exactly one remote branch, `main`, verified after publication.
+- [x] Initial tracked source size strictly below 10 MB: 540,287 bytes measured before the first commit.
 - [x] Lockfile, Dockerfile, ignore files, env example and deployment guide prepared.
 - [x] Required target: Google Cloud Run, project `project-7b32515b-99e7-45cb-a03`.
-- [ ] Google Cloud CLI authenticated by owner.
+- [x] Google Cloud CLI authenticated by owner; target project access verified.
 - [ ] Billing, service APIs and IAM confirmed.
 - [ ] Runtime secrets stored in Secret Manager.
 - [ ] Real Cloud Run URL deployed and `/health` tested.
@@ -49,3 +49,5 @@
 - [ ] Track submission attempts; maximum two, latest score replaces the previous score.
 
 No Innovator Dashboard submission has been made by this development workflow.
+
+Deployment approval has been provided. The live Google API still reported billing disabled on the specified project at the last check; this external prerequisite must be resolved before deploying and validating a real Cloud Run URL. No additional branch or alternate hosting platform has been created.
