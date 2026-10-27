@@ -1,7 +1,9 @@
 import { describe, it, expect } from "vitest";
 import request from "supertest";
 import { createApp } from "../server/app";
-const app = createApp();
+const app = createApp({
+  rateGuard: async () => ({ allowed: true, retryAfter: 60 }),
+});
 describe("API request boundary", () => {
   it("serves health with security headers", async () => {
     const r = await request(app).get("/health");

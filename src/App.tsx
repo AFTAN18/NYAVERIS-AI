@@ -63,12 +63,14 @@ import {
   Eye,
 } from "lucide-react";
 import { Button } from "./components/ui/button";
+import { PolicyEditor } from "./components/PolicyEditor";
 import { Modal } from "./components/ui/dialog";
 import { dictionaries, type Language, type TextKey } from "./i18n";
 import {
   money,
   restWindow,
   calculatePay,
+  policyInput,
   type Policy,
 } from "../shared/engines";
 import type {
@@ -87,7 +89,7 @@ type Config = {
   aiConfigured: boolean;
 };
 type ModalState = {
-  type: "replay" | "review" | "resolve" | "safety" | "shift";
+  type: "clarify" | "replay" | "review" | "resolve" | "safety" | "shift";
   id?: string;
 } | null;
 type Tracking = {
@@ -277,9 +279,7 @@ export default function App() {
       })
       .catch(() => {
         if (active)
-          setError(
-            "Cannot reach the FairShift API. Start the backend and retry.",
-          );
+          setError("Cannot reach the FairShift API. Start the backend and retry.");
       });
     return () => {
       active = false;
@@ -404,7 +404,7 @@ export default function App() {
     (s) => s.id === modal?.id,
   );
   const selectedPay = workspace?.pay.find(
-    (p) => p.shiftId === selectedShift?.id,
+    (p) => p.shiftId === (selectedShift?.id || selectedDispute?.shift_id),
   );
   const fmt = (
     date: string,
@@ -1153,6 +1153,18 @@ export default function App() {
                       >
                         {t.resolve}
                         <ArrowUpRight size={15} />
+                      </Button>
+                    )}
+                    {!admin && d.status === "responded" && (
+                      <Button
+                        variant="outline"
+                        onClick={() => setModal({ type: "clarify", id: d.id })}
+                      >
+                        {language === "ta"
+                          ? "மேலும் விளக்கம் கேளுங்கள்"
+                          : language === "hi"
+                            ? "स्पष्टीकरण माँगें"
+                            : "Request clarification"}
                       </Button>
                     )}
                     {!admin && d.status === "responded" && (
@@ -1926,6 +1938,10 @@ export default function App() {
             </div>
             <h2>{t.featureOne}</h2>
             <dl className="profile-details">
+              <dt>Pay basis</dt>
+              <dd>{workspace!.pay_policies[0].basis || "hourly"}</dd>
+              <dt>Daily rate</dt>
+              <dd>{money(workspace!.pay_policies[0].daily_paise || 80000)}</dd>
               <dt>Hourly rate</dt>
               <dd>{money(workspace!.pay_policies[0].hourly_paise)}</dd>
               <dt>Regular threshold</dt>
@@ -1937,9 +1953,29 @@ export default function App() {
             </dl>
             <div className="info-strip">
               <LockKeyhole size={19} />
-              {t.policyLocked}
+              {language === "ta"
+                ? "பழைய பணிகளின் கொள்கை நகல் பாதுகாக்கப்படுகிறது."
+                : language === "hi"
+                  ? "पुराने काम की नीति का स्नैपशॉट सुरक्षित रहता है।"
+                  : "Verified work retains its original policy snapshot."}
             </div>
             <p className="caption">{t.policyNote}</p>
+            {admin && (
+              <PolicyEditor
+                policy={workspace!.pay_policies[0]}
+                language={language}
+                busy={busy}
+                onSave={(policy, note) =>
+                  void run(() =>
+                    mutate("/policies", {
+                      ...policyInput.parse(policy),
+                      organization_id: org!.id,
+                      note,
+                    }),
+                  )
+                }
+              />
+            )}
           </section>
         </div>
       </>
@@ -2052,10 +2088,15 @@ export default function App() {
           e.preventDefault();
           const f = new FormData(e.currentTarget);
           void run(() =>
-            mutate("/reviews", {
-              shift_id: modal?.id,
-              reason: f.get("reason"),
-            }),
+            mutate(
+              modal?.type === "clarify" ? "/reviews/reopen" : "/reviews",
+              modal?.type === "clarify"
+                ? {
+                    dispute_id: modal.id,
+                    reason: f.get("reason"),
+                  }
+                : { shift_id: modal?.id, reason: f.get("reason") },
+            ),
           );
         }}
       >
@@ -2838,7 +2879,8 @@ export default function App() {
                   </main>
                   <div className="workspace-footer">
                     <span>
-                      <ShieldCheck size={13} /> Every action accounted for.
+                      <ShieldCheck size={13} /> Fairness You Can Trace. Trust
+                      You Can Prove.
                     </span>
                     <span>FairShift · Saakshi AI</span>
                   </div>
@@ -2864,7 +2906,7 @@ export default function App() {
         title={
           modal?.type === "replay"
             ? t.replay
-            : modal?.type === "review"
+            : modal?.type === "review" || modal?.type === "clarify"
               ? t.request
               : modal?.type === "resolve"
                 ? t.resolve
@@ -2881,7 +2923,7 @@ export default function App() {
         )}
         {modal?.type === "replay"
           ? Replay()
-          : modal?.type === "review"
+          : modal?.type === "review" || modal?.type === "clarify"
             ? ReviewForm()
             : modal?.type === "resolve"
               ? ResolveForm()

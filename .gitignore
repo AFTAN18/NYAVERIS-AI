@@ -1,4 +1,5 @@
 node_modules/
+.vercel/
 dist/
 dist-server/
 .env
@@ -10,3 +11,6 @@ test-results/
 *.log
 .DS_Store
 supabase/.temp/
+
+.vercel
+.env*

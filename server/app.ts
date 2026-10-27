@@ -4,7 +4,7 @@ import express, {
   type NextFunction,
 } from "express";
 import helmet from "helmet";
-import { rateLimit } from "express-rate-limit";
+import { persistentRateLimit, type RateGuard } from "./rate-limit.js";
 import { randomBytes, createHash } from "node:crypto";
 import { z } from "zod";
 import { userClient, safetyGateway } from "./supabase.js";
@@ -38,10 +38,10 @@ type Auth = {
 type AuthedRequest = Request & { identity?: Auth };
 const hash = (token: string) =>
   createHash("sha256").update(token).digest("hex");
-export function createApp() {
+export function createApp(options: { rateGuard?: RateGuard } = {}) {
   const app = express();
   app.disable("x-powered-by");
-  // Cloud Run has one trusted ingress proxy. IPs are used transiently for rate limiting, never persisted.
+  // Trust only the hosting ingress hop; addresses are HMACed before shared rate-limit storage.
   if (process.env.NODE_ENV === "production") app.set("trust proxy", 1);
   app.use(
     helmet({
@@ -67,17 +67,7 @@ export function createApp() {
     res.setHeader("Cache-Control", "no-store");
     next();
   });
-  app.use(
-    "/api",
-    rateLimit({
-      windowMs: 60000,
-      limit: 120,
-      message: { error: "Too many requests. Please wait before trying again." },
-      standardHeaders: "draft-8",
-      legacyHeaders: false,
-    }),
-  );
-  app.get("/health", (_req, res) =>
+  app.get(["/health", "/api/health"], (_req, res) =>
     res.json({ status: "ok", service: "fairshift" }),
   );
   app.get("/api/config", (_req, res) =>
@@ -88,14 +78,9 @@ export function createApp() {
       aiConfigured: !!(process.env.GEMINI_API_KEY && process.env.GEMINI_MODEL),
     }),
   );
-  const strictLimit = rateLimit({
-    windowMs: 15 * 60000,
-    limit: 30,
-    message: { error: "Too many requests. Please wait before trying again." },
-    standardHeaders: "draft-8",
-    legacyHeaders: false,
-  });
-  app.post("/api/demo-session", strictLimit, async (req, res) => {
+  const limit = (scope: Parameters<typeof persistentRateLimit>[0]) =>
+    persistentRateLimit(scope, options.rateGuard);
+  app.post("/api/demo-session", limit("login"), async (req, res) => {
     const { sector, role } = z
       .object({
         sector: z.enum(["construction", "healthcare"]),
@@ -133,11 +118,11 @@ export function createApp() {
       },
     ]);
   });
-  app.post("/api/safety", strictLimit, async (req, res) => {
+  app.post("/api/safety", limit("safety_submit"), async (req, res) => {
     const b = safetyInput.parse(req.body);
     const reference = "FS-" + randomBytes(8).toString("hex").toUpperCase(),
       token = randomBytes(32).toString("hex");
-    const gateway = await safetyGateway();
+    const gateway = res.locals.gateway ?? (await safetyGateway());
     const { error } = await gateway.rpc("submit_safety", {
       p_org: b.organization_id,
       p_reference: reference,
@@ -149,9 +134,9 @@ export function createApp() {
     if (error) throw new Error("Safety submission failed");
     res.status(201).json({ reference, token });
   });
-  app.post("/api/safety/track", strictLimit, async (req, res) => {
+  app.post("/api/safety/track", limit("safety_track"), async (req, res) => {
     const b = trackingInput.parse(req.body);
-    const gateway = await safetyGateway();
+    const gateway = res.locals.gateway ?? (await safetyGateway());
     const { data, error } = await gateway.rpc("track_safety", {
       p_reference: b.reference,
       p_token_hash: hash(b.token),
@@ -163,6 +148,7 @@ export function createApp() {
         .json({ error: "Tracking credentials not recognized" });
     res.json(data);
   });
+  app.use("/api", limit("api"));
   app.use("/api", async (req: AuthedRequest, res, next) => {
     const token = req.headers.authorization?.match(/^Bearer (.+)$/)?.[1];
     if (!token) return res.status(401).json({ error: "Sign in to continue" });
@@ -307,18 +293,33 @@ export function createApp() {
   });
   app.post("/api/policies", async (req, res) => {
     const b = policyInput
-      .extend({ organization_id: uuid })
+      .extend({
+        organization_id: uuid,
+        note: z.string().trim().min(10).max(2000),
+      })
       .strict()
       .parse(req.body);
-    await rpc(req, res, "save_policy", {
-      p_org: b.organization_id,
-      p_hourly: b.hourly_paise,
-      p_regular: b.regular_minutes,
-      p_ot: b.overtime_bps,
-      p_rest: b.min_rest_minutes,
-      p_max: b.max_shift_minutes,
-      p_days: b.max_consecutive_days,
-      p_timezone: b.timezone,
+    if (b.basis === "daily" && !b.daily_paise)
+      return res.status(400).json({ error: "Daily rate is required" });
+    const { organization_id, note, ...policy } = b;
+    await rpc(req, res, "configure_pay_policy", {
+      p_org: organization_id,
+      p_policy: {
+        ...policy,
+        basis: policy.basis || "hourly",
+        daily_paise: policy.daily_paise || 80000,
+      },
+      p_note: note,
+    });
+  });
+  app.post("/api/reviews/reopen", async (req, res) => {
+    const b = z
+      .object({ dispute_id: uuid, reason: z.string().trim().min(10).max(1000) })
+      .strict()
+      .parse(req.body);
+    await rpc(req, res, "reopen_review", {
+      p_dispute: b.dispute_id,
+      p_reason: b.reason,
     });
   });
   app.post("/api/payroll", async (req, res) => {
@@ -344,7 +345,7 @@ export function createApp() {
       p_note: b.note,
     });
   });
-  app.post("/api/assistant", strictLimit, async (req, res) => {
+  app.post("/api/assistant", limit("assistant"), async (req, res) => {
     const b = assistantInput.parse(req.body);
     let context: object = {};
     if (b.shift_id) {
@@ -383,6 +384,14 @@ export function createApp() {
       return res.status(413).json({ error: "Request is too large" });
     if (err instanceof SyntaxError)
       return res.status(400).json({ error: "Invalid JSON" });
+    console.error(
+      JSON.stringify({
+        event: "request_failed",
+        method: _req.method,
+        path: _req.path,
+        errorType: err instanceof Error ? err.name : "UnknownError",
+      }),
+    );
     res.status(503).json({
       error:
         "Service unavailable. Please retry. If this continues, check server configuration.",

@@ -27,6 +27,8 @@ export const shiftInput = z
     "Use whole minute shift boundaries",
   );
 export const policyInput = z.object({
+  basis: z.enum(["hourly", "daily"]).optional(),
+  daily_paise: z.number().int().positive().max(100000000).optional(),
   hourly_paise: z.number().int().positive().max(10000000),
   regular_minutes: z.number().int().min(1).max(1440),
   overtime_bps: z.number().int().min(10000).max(50000),
@@ -48,6 +50,7 @@ export type Shift = z.infer<typeof shiftInput> & {
   worker_id?: string;
   location?: string;
   confirmed?: boolean;
+  policy_snapshot?: Policy | null;
 };
 export function calculatePay(
   rawShift: Shift,
@@ -55,7 +58,7 @@ export function calculatePay(
   recordedPaise = 0,
 ) {
   const s = shiftInput.parse(rawShift),
-    p = policyInput.parse(rawPolicy);
+    p = policyInput.parse(rawShift.policy_snapshot ?? rawPolicy);
   if (!Number.isSafeInteger(recordedPaise) || recordedPaise < 0)
     throw new Error("Invalid recorded money");
   const payableMinutes =
@@ -63,13 +66,17 @@ export function calculatePay(
   const regularMinutes = Math.min(payableMinutes, p.regular_minutes),
     overtimeMinutes = Math.max(0, payableMinutes - p.regular_minutes);
   // Round each earning component once to the nearest paise using integer ratios.
+  if (p.basis === "daily" && !p.daily_paise)
+    throw new Error("Daily rate is required");
+  const rate = BigInt(p.basis === "daily" ? p.daily_paise! : p.hourly_paise);
+  const denominator = BigInt(p.basis === "daily" ? p.regular_minutes : 60);
   const regularPaise = Number(
-    (BigInt(regularMinutes) * BigInt(p.hourly_paise) + 30n) / 60n,
+    (BigInt(regularMinutes) * rate + denominator / 2n) / denominator,
   );
   const overtimePaise = Number(
-    (BigInt(overtimeMinutes) * BigInt(p.hourly_paise) * BigInt(p.overtime_bps) +
-      300000n) /
-      600000n,
+    (BigInt(overtimeMinutes) * rate * BigInt(p.overtime_bps) +
+      denominator * 5000n) /
+      (denominator * 10000n),
   );
   return {
     payableMinutes,

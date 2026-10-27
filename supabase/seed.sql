@@ -10,7 +10,7 @@ insert into public.organization_members(organization_id,user_id,role,display_nam
 ('10000000-0000-4000-8000-000000000001','20000000-0000-4000-8000-000000000002','admin','Meera Sharma'),
 ('10000000-0000-4000-8000-000000000002','20000000-0000-4000-8000-000000000003','worker','Kavya Raman'),
 ('10000000-0000-4000-8000-000000000002','20000000-0000-4000-8000-000000000004','admin','Dr. Ravi Menon') on conflict do nothing;
-insert into public.pay_policies values
+insert into public.pay_policies(organization_id,hourly_paise,regular_minutes,overtime_bps,min_rest_minutes,max_shift_minutes,max_consecutive_days,timezone) values
 ('10000000-0000-4000-8000-000000000001',10000,480,15000,660,720,6,'Asia/Kolkata'),
 ('10000000-0000-4000-8000-000000000002',15000,480,15000,660,720,6,'Asia/Kolkata') on conflict do nothing;
 insert into public.shifts(id,organization_id,worker_id,starts_at,ends_at,break_minutes,location,confirmed) values
