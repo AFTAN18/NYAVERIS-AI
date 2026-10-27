@@ -2,6 +2,8 @@
 
 **Fairness You Can Trace. Trust You Can Prove.**
 
+**Production application: [nyaveris-ai.vercel.app](https://nyaveris-ai.vercel.app).**
+
 NYAVERIS AI is a worker-first fairness and accountability platform built for **PromptWars 2026**, ACM Student Chapter, SRMIST, aligned with **UN SDG 8: Decent Work and Economic Growth**. It implements the official **FairShift: Decent Work Platform** hackathon problem statement. It supports construction sites and healthcare departments through one tenant-aware application.
 
 Workers should not need to decode payroll spreadsheets or repeatedly explain an unresolved hazard. The **Fairness Twin + ProofLoop Engine** compares confirmed work with employer payroll, explains discrepancies, opens a review, records the employer response, and gives the worker the final confirmation step.
@@ -57,9 +59,9 @@ Browser tests need a running frontend/backend and Chrome on Windows (or installe
 
 ## Deployment
 
-Deploy only to **Google Cloud Run** using the Dockerfile and [deployment guide](docs/DEPLOYMENT.md). Target project supplied by the owner: `project-7b32515b-99e7-45cb-a03`. Express binds `0.0.0.0:$PORT`; `/health` provides a readiness check. `.gcloudignore` and `.dockerignore` exclude secrets and caches. Put runtime passwords/optional Gemini credentials in Secret Manager.
+The requested development deployment is **Vercel**, using the existing project renamed in place to `nyaveris-ai`. The Vite frontend and Node.js API function share [https://nyaveris-ai.vercel.app](https://nyaveris-ai.vercel.app). See the [Vercel deployment and domain guide](docs/VERCEL_DEPLOYMENT.md).
 
-**A real Cloud Run URL is not yet recorded as verified.** Follow the verification steps before submitting. Local build success alone does not mean a deployment succeeded.
+The Dockerfile and [Cloud Run deployment guide](docs/DEPLOYMENT.md) remain available for portability. **The official FairShift hackathon submission guide requires Google Cloud Run; this verified Vercel deployment does not satisfy that hosting rule.** No verified Cloud Run URL is recorded.
 
 ## Security and inclusion
 
