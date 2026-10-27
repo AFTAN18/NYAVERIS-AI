@@ -29,7 +29,7 @@
 
 ## Repository and hosting
 
-- [x] Application source published to public `https://github.com/AFTAN18/FAIRSHIFT.git`; final verification documentation and constraint hardening committed on the same branch.
+- [x] Application source published to public `https://github.com/AFTAN18/NYAVERIS-AI.git`; final verification documentation and constraint hardening committed on the same branch.
 - [x] Exactly one remote branch, `main`, verified after publication.
 - [x] Initial tracked source size strictly below 10 MB: 540,287 bytes measured before the first commit.
 - [x] Lockfile, Dockerfile, ignore files, env example and deployment guide prepared.

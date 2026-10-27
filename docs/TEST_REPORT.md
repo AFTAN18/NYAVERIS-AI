@@ -12,7 +12,7 @@ The application was verified locally against the compiled production Express ser
 | Dependency audit | Zero known vulnerabilities reported |
 | Staged source and browser-bundle secret scans | Passed; configured backend secret values absent |
 | Repository compliance | Single `main` branch; initial tracked source 540,287 bytes, strictly below 10 MB |
-| Initial GitHub Actions CI | [Passed](https://github.com/AFTAN18/FAIRSHIFT/actions/runs/40459524074) |
+| Initial GitHub Actions CI | [Passed](https://github.com/AFTAN18/NYAVERIS-AI/actions/runs/40459524074) |
 
 The browser suite exercised the full worker request → employer correction → worker confirmation flow through actual UI forms, transactional ProofLoop history, anonymous submission and tracking, administrator safety acknowledgement, rejection of a wrong tracking token, hospital rest what-if, confirmed schedule persistence, Tamil/Hindi navigation, narrow 360px layout, and keyboard access. The schedule-persistence test restored the original hospital demonstration schedule while retaining its audit history.
 

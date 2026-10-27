@@ -12,7 +12,7 @@ One platform supports construction and healthcare, with worker and employer inte
 
 The goal is practical accountability: clearer pay, safer schedules and a stronger worker voice. Demonstration policies are not legal advice, and anonymous reporting does not promise absolute anonymity.
 
-Source: https://github.com/AFTAN18/FAIRSHIFT.git
+Source: https://github.com/AFTAN18/NYAVERIS-AI.git
 
 Live demo: **add the real Cloud Run URL only after it is deployed and tested**.
 

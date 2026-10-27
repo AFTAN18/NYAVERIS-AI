@@ -85,4 +85,4 @@ NYAVERIS AI makes potential underpayment visible, gives workers an actionable re
 
 ## Submission
 
-Repository: **https://github.com/AFTAN18/FAIRSHIFT.git**. Maintain exactly one branch, `main`, and an initial source repository below 10 MB. See [submission checklist](docs/SUBMISSION_CHECKLIST.md), [test report](docs/TEST_REPORT.md) and [LinkedIn draft](docs/LINKEDIN_DRAFT.md). Do not submit to the Innovator Dashboard until the repository, real Cloud Run URL and demonstration are stable; the latest of at most two submissions replaces the previous score.
+Repository: **https://github.com/AFTAN18/NYAVERIS-AI.git**. Maintain exactly one branch, `main`, and an initial source repository below 10 MB. See [submission checklist](docs/SUBMISSION_CHECKLIST.md), [test report](docs/TEST_REPORT.md) and [LinkedIn draft](docs/LINKEDIN_DRAFT.md). Do not submit to the Innovator Dashboard until the repository, real Cloud Run URL and demonstration are stable; the latest of at most two submissions replaces the previous score.

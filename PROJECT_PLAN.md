@@ -11,6 +11,6 @@
 
 ## Verified implementation status
 
-The core pay, ProofLoop, anonymous safety and rest-risk slices are implemented with persisted synthetic construction and healthcare data. Supabase Auth, tenant RLS, server authorization and transaction-backed history are configured. The production build, 36 unit/API tests, 8 browser tests and 23 live database security assertions passed. Source is saved to the public FAIRSHIFT repository on its sole `main` branch.
+The core pay, ProofLoop, anonymous safety and rest-risk slices are implemented with persisted synthetic construction and healthcare data. Supabase Auth, tenant RLS, server authorization and transaction-backed history are configured. The production build, 36 unit/API tests, 8 browser tests and 23 live database security assertions passed. Source is saved to the public NYAVERIS-AI repository on its sole `main` branch.
 
 The Google CLI is installed and authenticated, project access is verified, and deployment approval is recorded. The last Google API checks still returned billing disabled for the requested project, so Cloud Run deployment is pending. Gemini remains on the verified text fallback at the owner's request. LinkedIn publication and official Innovator submission remain pending. README.md records secondary product limitations; the full hackathon acceptance list is not claimed complete until the live Cloud Run deployment and external deliverables are verified.
