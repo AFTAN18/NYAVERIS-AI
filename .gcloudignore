@@ -1,0 +1,12 @@
+.gcloudignore
+.git
+.gitignore
+node_modules
+dist
+dist-server
+.env
+.env.*
+.local
+test-results
+playwright-report
+*.log

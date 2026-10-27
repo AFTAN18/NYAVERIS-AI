@@ -1,0 +1,12 @@
+node_modules/
+dist/
+dist-server/
+.env
+.env.*
+!.env.example
+playwright-report/
+test-results/
+.local/
+*.log
+.DS_Store
+supabase/.temp/
