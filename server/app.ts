@@ -68,7 +68,7 @@ export function createApp(options: { rateGuard?: RateGuard } = {}) {
     next();
   });
   app.get(["/health", "/api/health"], (_req, res) =>
-    res.json({ status: "ok", service: "fairshift" }),
+    res.json({ status: "ok", service: "NYAVERIS AI" }),
   );
   app.get("/api/config", (_req, res) =>
     res.json({
@@ -367,6 +367,8 @@ export function createApp(options: { rateGuard?: RateGuard } = {}) {
         .select("gross_paise")
         .eq("shift_id", b.shift_id)
         .maybeSingle();
+      if (p.error || !p.data || payroll.error)
+        throw new Error("Unable to load pay explanation");
       context = calculatePay(
         s.data,
         policyInput.parse(p.data),

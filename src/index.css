@@ -1,4 +1,5 @@
-@import "tailwindcss";
+/* Scan UI sources only: test/report prose must not generate production utilities. */
+@import "tailwindcss" source(".");
 @theme {
   --font-sans: "Segoe UI", "Nirmala UI", Arial, sans-serif;
 }
@@ -4196,6 +4197,27 @@ td .button-row {
 .activity-row > small,
 .workspace-footer {
   color: #53665e;
+}
+/* Expanded safety/payroll axe checks found low-contrast secondary text. */
+.info-strip,
+.tabs button:not(.active),
+.pay-record .eyebrow,
+.case-card .eyebrow {
+  color: #53665e;
+}
+.schedule-window > div > small,
+.schedule-window > div > span {
+  color: #53665e;
+}
+.risk-item p,
+.risk-item small,
+.rest-result.rest-warning > div > b,
+.rest-result.rest-warning > div > p {
+  color: #7c652f;
+}
+.rest-result.rest-clear > div > b,
+.rest-result.rest-clear > div > p {
+  color: #3c6547;
 }
 .discrepancy-callout p {
   color: #7c652f;

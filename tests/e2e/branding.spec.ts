@@ -6,7 +6,7 @@ test("NYAVERIS AI branding stays consistent on desktop and mobile", async ({
   await expect(page).toHaveTitle(
     "NYAVERIS AI — Fairness You Can Trace. Trust You Can Prove.",
   );
-  await expect(page.locator(".landing-nav .brand")).toHaveText("NYAVERISAI");
+  await expect(page.locator(".landing-nav .brand")).toHaveText("NYAVERIS AI");
   await expect(page.locator(".brand-tagline")).toHaveText(
     "Fairness You Can Trace. Trust You Can Prove.",
   );
@@ -41,7 +41,7 @@ test("NYAVERIS AI branding stays consistent on desktop and mobile", async ({
   );
   await page.getByRole("button", { name: "Open navigation" }).click();
   await expect(page.locator(".sidebar .brand")).toBeVisible();
-  await expect(page.locator(".sidebar .brand")).toHaveText("NYAVERISAI");
+  await expect(page.locator(".sidebar .brand")).toHaveText("NYAVERIS AI");
   await page.getByRole("link", { name: "My pay", exact: true }).click();
   await expect(page.locator(".page-heading .eyebrow")).toContainText(
     "NYAVERIS AI",

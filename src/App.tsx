@@ -3,9 +3,6 @@ import {
   useEffect,
   useState,
   useRef,
-  cloneElement,
-  isValidElement,
-  type ReactElement,
   type FormEvent,
   type ReactNode,
 } from "react";
@@ -25,7 +22,6 @@ import {
 import {
   ArrowUpRight,
   ArrowRight,
-  ArrowLeft,
   Check,
   CheckCheck,
   ChevronRight,
@@ -55,15 +51,15 @@ import {
   FileCheck2,
   MessageSquareText,
   LockKeyhole,
-  Building2,
   TrendingUp,
-  Download,
   Radio,
   Sun,
   Eye,
 } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { PolicyEditor } from "./components/PolicyEditor";
+import { Field } from "./components/Field";
+import { ApiError, requestApi } from "./lib/api";
 import { Modal } from "./components/ui/dialog";
 import { dictionaries, type Language, type TextKey } from "./i18n";
 import {
@@ -73,14 +69,7 @@ import {
   policyInput,
   type Policy,
 } from "../shared/engines";
-import type {
-  Workspace,
-  WorkShift,
-  Dispute,
-  SafetyReport,
-  SafetyEvent,
-  Pay,
-} from "./types";
+import type { Workspace, WorkShift, SafetyEvent, Pay } from "./types";
 
 type Config = {
   url: string;
@@ -137,7 +126,7 @@ function Brand({ light = false }: { light?: boolean }) {
         <span />
       </span>
       <span className="brand-wordmark">
-        NYAVERIS<span className="brand-ai">AI</span>
+        NYAVERIS<span className="brand-ai"> AI</span>
       </span>
     </Link>
   );
@@ -150,29 +139,6 @@ function Badge({
   tone?: string;
 }) {
   return <span className={`badge ${tone}`}>{children}</span>;
-}
-function Field({
-  label,
-  children,
-  hint,
-}: {
-  label: string;
-  children: ReactNode;
-  hint?: string;
-}) {
-  return (
-    <label className="field">
-      <span>{label}</span>
-      {isValidElement(children)
-        ? cloneElement(children as ReactElement<Record<string, unknown>>, {
-            "aria-label":
-              (children.props as Record<string, unknown>)["aria-label"] ||
-              label,
-          })
-        : children}
-      {hint && <small>{hint}</small>}
-    </label>
-  );
 }
 function Empty({ children }: { children: ReactNode }) {
   return (
@@ -241,6 +207,8 @@ export default function App() {
   const loadGeneration = useRef(0);
   const currentUser = useRef(session?.user.id);
   currentUser.current = session?.user.id;
+  const currentSession = useRef(session);
+  currentSession.current = session;
   useEffect(() => {
     // A shared browser must not carry anonymous tracking secrets across identities.
     setCredentials(null);
@@ -303,23 +271,28 @@ export default function App() {
     }
   }, [toast]);
   const api = useCallback(
-    async (path: string, body?: unknown) => {
-      const response = await fetch("/api" + path, {
-        method: body === undefined ? "GET" : "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(session
-            ? { Authorization: `Bearer ${session.access_token}` }
-            : {}),
-        },
-        ...(body === undefined ? {} : { body: JSON.stringify(body) }),
-      });
-      const data = await response.json();
-      if (!response.ok)
-        throw new Error(data.error || "Unable to complete the request");
-      return data;
+    async <T,>(path: string, body?: unknown) => {
+      const token = session?.access_token;
+      try {
+        return await requestApi<T>(path, body, token);
+      } catch (error) {
+        if (
+          error instanceof ApiError &&
+          error.status === 401 &&
+          token &&
+          currentSession.current?.access_token === token
+        ) {
+          // Clear only the rejected session, never a newer login or refreshed token.
+          if (client) await client.auth.signOut({ scope: "local" });
+          if (currentSession.current?.access_token === token) {
+            setSession(null);
+            setWorkspace(null);
+          }
+        }
+        throw error;
+      }
     },
-    [session],
+    [session, client],
   );
   const reload = useCallback(async () => {
     if (!session || currentUser.current !== session.user.id) return;
@@ -330,7 +303,7 @@ export default function App() {
     setLoading(true);
     setError("");
     try {
-      const data = await api("/workspace");
+      const data = await api<Workspace>("/workspace");
       if (isCurrent()) setWorkspace(data);
     } catch (e) {
       if (isCurrent()) setError((e as Error).message);
@@ -360,7 +333,10 @@ export default function App() {
   ) {
     await run(async () => {
       if (!client) throw new Error("Supabase is not configured");
-      const s = await api("/demo-session", { role, sector });
+      const s = await api<{ access_token: string; refresh_token: string }>(
+        "/demo-session",
+        { role, sector },
+      );
       const result = await client.auth.setSession(s);
       if (result.error) throw result.error;
       setWorkspace(null);
@@ -380,7 +356,7 @@ export default function App() {
     await run(
       async () =>
         setAssistant(
-          await api("/assistant", {
+          await api<NonNullable<typeof assistant>>("/assistant", {
             topic,
             language,
             ...(topic === "pay" && focusShift
@@ -1204,7 +1180,7 @@ export default function App() {
       e.preventDefault();
       const f = new FormData(e.currentTarget);
       await run(async () => {
-        const result = await api("/safety", {
+        const result = await api<NonNullable<typeof credentials>>("/safety", {
           organization_id: f.get("organization_id"),
           category: f.get("category"),
           priority: f.get("priority"),
@@ -1220,7 +1196,7 @@ export default function App() {
       await run(
         async () =>
           setTracking(
-            await api("/safety/track", {
+            await api<Tracking>("/safety/track", {
               reference: String(f.get("reference")).trim(),
               token: String(f.get("token")).trim(),
             }),
@@ -2676,7 +2652,7 @@ export default function App() {
                   </div>
                   <span className="nav-label">{t.overviewLabel}</span>
                   <nav aria-label="Main navigation">
-                    {navKeys.map((key, i) => {
+                    {navKeys.map((key) => {
                       const Icon = iconFor[key as keyof typeof iconFor];
                       return (
                         <NavLink

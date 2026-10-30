@@ -13,5 +13,5 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 app.listen(Number(process.env.PORT || 8080), "0.0.0.0", () =>
-  console.log(`FairShift listening on port ${process.env.PORT || 8080}`),
+  console.log(`NYAVERIS AI listening on port ${process.env.PORT || 8080}`),
 );

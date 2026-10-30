@@ -1,7 +1,6 @@
 /** One-time dedicated-project provisioning. No secrets or account passwords are printed. */
 import "dotenv/config";
 import { createClient } from "@supabase/supabase-js";
-import { readFileSync } from "node:fs";
 if (!process.env.SUPABASE_SECRET_KEY)
   throw new Error(
     "Provisioning requires a server-only Supabase secret key. Remove it from runtime after provisioning.",
