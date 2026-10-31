@@ -12,7 +12,7 @@ const standalone = ['supabase/seed.sql', 'package.json', 'package-lock.json',
   'index.html', 'components.json', 'Dockerfile', '.dockerignore', '.vercelignore',
   '.env.example', 'scripts/provision.ts', 'scripts/rls-test.ts',
   'scripts/rls-readonly-test.ts', 'scripts/serverless-security-test.ts',
-  'scripts/verify-backend.mjs'];
+  'scripts/verify-backend.mjs', 'scripts/test-saas-database.mjs'];
 const forbidden = new Set(['.git', '.vercel', '.local', '.temp', 'node_modules',
   'dist', 'dist-server', 'test-results', 'playwright-report']);
 const args = process.argv.slice(2);

@@ -2,11 +2,21 @@ import "dotenv/config";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import assert from "node:assert/strict";
-const files = execFileSync("git", ["ls-files", "--cached", "-z"], {
+const tracked = execFileSync("git", ["ls-files", "--cached", "-z"], {
   encoding: "utf8",
 })
   .split("\0")
   .filter(Boolean);
+const untracked = execFileSync(
+  "git",
+  ["ls-files", "--others", "--exclude-standard", "-z"],
+  {
+    encoding: "utf8",
+  },
+)
+  .split("\0")
+  .filter(Boolean);
+const files = [...new Set([...tracked, ...untracked])];
 assert.ok(
   files.length > 0,
   "Stage source files before checking repository contents",
@@ -73,7 +83,8 @@ assert.ok(branches.length <= 1, "More than one local branch exists");
 console.log(
   JSON.stringify({
     status: "passed",
-    trackedFiles: files.length,
+    trackedFiles: tracked.length,
+    untrackedFilesScanned: untracked.length,
     trackedBytes: bytes,
     initialRepositoryBelow10MB: true,
     secretValuesAbsent: true,

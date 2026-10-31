@@ -1,6 +1,6 @@
 # Architecture and security model
 
-React/Vite and Express form one modular monolith. Express serves the compiled frontend and APIs on the same Cloud Run origin. Supabase PostgreSQL is the only application database; there is no local-storage business-data fallback. Browser local storage contains only language preference and the Supabase Auth session.
+React/Vite and Express form one modular monolith. Vercel serves the compiled frontend and exports Express through one Node function on the same origin. The portable local/container entry point also serves frontend and APIs together. Supabase PostgreSQL is the only application database; there is no local-storage business-data fallback. Browser local storage contains only language preference and the Supabase Auth session.
 
 ```mermaid
 flowchart LR
@@ -21,7 +21,7 @@ Tables expose SELECT only to authenticated users, subject to RLS. Direct inserts
 
 ## ProofLoop and historical accuracy
 
-Business writes and events commit atomically in PostgreSQL. Payroll corrections preserve previous and corrected amounts; workers must confirm an employer response before closing a pay review. Verified or payroll-linked shifts cannot be silently rescheduled. Policies are locked after the first confirmed shift, preventing current rates from rewriting historical expected pay. A production rollout needing rate changes must add versioned policies first.
+Business writes and events commit atomically in PostgreSQL. Payroll corrections preserve previous and corrected amounts; workers must confirm an employer response before closing a pay review. Verified or payroll-linked shifts cannot be silently rescheduled. Confirmed/payroll-linked shifts retain their policy snapshot. Authorized policy edits record a version event and apply to unsnapshotted work, preserving historical expected pay. Hourly and prorated daily policies use the same deterministic engine.
 
 History is append-only for application roles, not cryptographically immutable or tamper-proof. Database owners retain administrative powers. A record does not prove the truth of a work claim. Signed receipts are intentionally out of scope.
 
@@ -31,7 +31,7 @@ Safety submission does not read or attach employee identity. The server generate
 
 A dedicated Supabase Auth gateway account performs only guarded submit/track RPCs. Its ID is allowed in `private.gateway_accounts` and has no organization memberships, SELECT access to private tables, or worker/payroll permissions. The account password remains server-side. No service-role/secret key is needed by the application runtime. Admin updates run as the verified admin identity and enforce sequential statuses.
 
-Rate limits use transient IP buckets in process memory; no IP is stored with a report. On Cloud Run, max instances should initially be one so these limits are effective per instance. Scale-out requires an infrastructure rate limiter before increasing replicas. Infrastructure providers may maintain their own access logs. Report contents or infrastructure information can identify someone; absolute anonymity is not promised. Avoid collecting names, employee IDs, precise personal locations, or attachments.
+Rate limits use shared private PostgreSQL buckets keyed by an HMAC of address and scope. Raw IP addresses are not stored in those buckets or attached to reports. The limiter is independent of function-instance memory and fails closed when unavailable. A short-lived gateway authentication cache is an optimization only. Infrastructure providers may maintain their own access logs. Report contents or infrastructure information can identify someone; absolute anonymity is not promised. Avoid collecting names, employee IDs, precise personal locations, or attachments.
 
 ## Deterministic engines
 

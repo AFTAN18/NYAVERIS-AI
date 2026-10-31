@@ -57,6 +57,8 @@ npm run build
 
 Browser tests need a running frontend/backend and Chrome on Windows (or installed Playwright Chromium elsewhere). Live RLS tests need the dedicated provisioned project. Tests append clearly marked synthetic QA records; never point them at production employee data. See [setup](docs/SETUP.md) for fresh-project provisioning and environment details.
 
+For SELECT-only tenant-isolation checks, use `npm run test:rls:readonly`. The [engineering optimization report](docs/OPTIMIZATION_REPORT.md) records baseline/final results and the exact read-only browser subset; it does not claim a new official evaluation score.
+
 ## Deployment
 
 The requested development deployment is **Vercel**, using the existing project renamed in place to `nyaveris-ai`. The Vite frontend and Node.js API function share [https://nyaveris-ai.vercel.app](https://nyaveris-ai.vercel.app). See the [Vercel deployment and domain guide](docs/VERCEL_DEPLOYMENT.md).
@@ -77,10 +79,10 @@ NYAVERIS AI makes potential underpayment visible, gives workers an actionable re
 
 ## Scope and known limitations
 
-- Policies lock after the first confirmed shift to protect historical calculations. Versioned rate changes, dedicated daily-rate policies and a policy editor are future work. The current calculator uses hourly policies.
-- Workspace responses are capped at 500 records per table. This is suitable for the seeded demonstration; larger deployments require server-side pagination/aggregate queries before claiming complete organization-wide metrics.
-- The current schedule-entry form uses Asia/Kolkata, matching both configured organizations. Wider deployments need full IANA wall-time entry, including DST ambiguity handling.
-- Rate limiting is per instance. The deployment starts at one maximum instance; scale-out needs infrastructure-level abuse protection.
+- The local candidate supports versioned hourly/daily pay policies and employee rate snapshots. New business onboarding, employee management and invitations require the proposed SaaS migration and approved rollout; these flows are not enabled in the current deployment.
+- Workspace reads paginate in 500-record pages with a 10,000-record safety window. Exceeding that window fails explicitly; larger deployments need reporting-period pagination or aggregate queries.
+- Schedule entry uses the organization's IANA time zone and rejects ambiguous/nonexistent daylight-saving minutes. Users must choose another minute when a clock change makes their selection ambiguous.
+- Rate limits use shared PostgreSQL state and fail closed when the limiter is unavailable. Serverless handlers do not rely on process-local counters.
 - Live Gemini calls, container execution, cloud deployment and broader manual accessibility review require their respective external setup/verification. Text fallbacks are available without Gemini.
 - CSV import, attachments/certificates, signed receipts, realtime notifications, production onboarding and automated demo reset are intentionally not included.
 - Core navigation, forms and guidance support Tamil/Hindi; some technical audit names, brand microcopy, administrator explanations and synthetic record contents remain English. Obtain native-speaker review before a public workforce rollout.
