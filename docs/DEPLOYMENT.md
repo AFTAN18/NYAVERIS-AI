@@ -1,6 +1,6 @@
-# Google Cloud Run deployment
+# NYAVERIS AI — portable Cloud Run deployment (historical target)
 
-Target project supplied by the owner: `project-7b32515b-99e7-45cb-a03`. Region: `asia-south1`. The app is designed for a single Cloud Run service serving Express and compiled Vite assets. No Vercel, Netlify, Firebase or alternate application database is used.
+Target project supplied by the owner: `project-7b32515b-99e7-45cb-a03`. Region: `asia-south1`. The app is designed for a single Cloud Run service serving Express and compiled Vite assets. Current production uses the existing Vercel application at https://nyaveris-ai.vercel.app; see VERCEL_DEPLOYMENT.md. This guide preserves the original Cloud Run submission target and commands, not evidence of a deployed Cloud Run service. Supabase remains the sole database.
 
 Official references: [CLI installation](https://docs.cloud.google.com/sdk/docs/install-sdk), [source deployment](https://docs.cloud.google.com/run/docs/deploying-source-code), [Cloud Run secrets](https://docs.cloud.google.com/run/docs/configuring/services/secrets).
 
@@ -16,6 +16,8 @@ Official references: [CLI installation](https://docs.cloud.google.com/sdk/docs/i
 gcloud config set project project-7b32515b-99e7-45cb-a03
 gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com secretmanager.googleapis.com
 ```
+
+Legacy `fairshift-*` service/secret identifiers below are historical technical names. Do not rename or create resources as a branding operation; no Cloud Run deployment was performed.
 
 ## Secret Manager
 
@@ -41,7 +43,7 @@ gcloud run deploy fairshift-saakshi-ai `
   --set-secrets DEMO_PASSWORD=fairshift-demo-password:latest,SAFETY_GATEWAY_PASSWORD=fairshift-safety-password:latest
 ```
 
-The public HTTP service serves the landing page and anonymous reporting endpoints. Business APIs still require verified Supabase Auth and organization membership. A production tenant should use a separate Supabase project and `ENABLE_DEMO=false`.
+The public HTTP service serves the landing page and anonymous reporting endpoints. Business APIs still require verified Supabase Auth and organization membership. Use the existing authorized Supabase project; do not create another project. `ENABLE_DEMO=false` is a separately approved rollout decision.
 
 `--source .` uses the provided Dockerfile. The multi-stage build runs TypeScript checks and creates frontend/server bundles, prunes development packages, and runs as the unprivileged `node` user. Express binds `0.0.0.0:$PORT`. No local Docker is required for the Cloud Build source-deploy path.
 
@@ -57,4 +59,4 @@ The public HTTP service serves the landing page and anonymous reporting endpoint
 
 ## Scaling and rollback
 
-Start with one maximum instance because rate-limit state is local to the process. Before increasing replicas, add edge/infrastructure abuse controls and paginated workspace queries. Cloud Run revisions support rollback; pin the known-good revision after final verification. Avoid repeated Innovator Dashboard submissions; only submit once the real URL and repository are verified.
+The current application uses database-backed rate limiting and paginated queries. Keep deployment limits appropriate to existing project quotas. Cloud Run revisions support rollback; pin the known-good revision after final verification. Avoid repeated Innovator Dashboard submissions; only submit once the real URL and repository are verified.
