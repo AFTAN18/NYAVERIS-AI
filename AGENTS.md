@@ -1,4 +1,4 @@
-# FairShift engineering rules
+# NYAVERIS AI engineering rules
 
 - Keep exactly one Git branch; do not create worktrees or extra branches.
 - Supabase PostgreSQL is the sole application database. Never substitute local persistence.

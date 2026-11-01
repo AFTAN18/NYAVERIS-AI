@@ -59,7 +59,7 @@ run('services', 'enable', 'run.googleapis.com', 'cloudbuild.googleapis.com',
     'artifactregistry.googleapis.com', 'secretmanager.googleapis.com', '--project', args.project, '--quiet')
 account = f'fairshift-runtime@{args.project}.iam.gserviceaccount.com'
 if run('iam', 'service-accounts', 'describe', account, '--project', args.project, allow_failure=True).returncode:
-    run('iam', 'service-accounts', 'create', 'fairshift-runtime', '--display-name=FairShift runtime',
+    run('iam', 'service-accounts', 'create', 'fairshift-runtime', '--display-name=NYAVERIS AI runtime',
         '--project', args.project, '--quiet')
 
 bindings = []

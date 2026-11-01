@@ -1,4 +1,4 @@
-name: Verify FairShift
+name: Verify NYAVERIS AI
 on:
   push:
     branches: [main]

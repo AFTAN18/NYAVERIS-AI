@@ -8,14 +8,16 @@ NYAVERIS AI is a worker-first fairness and accountability platform built for **P
 
 Workers should not need to decode payroll spreadsheets or repeatedly explain an unresolved hazard. The **Fairness Twin + ProofLoop Engine** compares confirmed work with employer payroll, explains discrepancies, opens a review, records the employer response, and gives the worker the final confirmation step.
 
+Current activation evidence: [submission audit](https://github.com/Dr-M-Suchithra-lab/ACM-SRM-PromptWars-2026/blob/192425004-AFTAN-FAIZ/students/192425004-AFTAN-FAIZ/docs/ACTIVATION_2026-11-01.md). Email signup is implemented. Hosted new-business onboarding and invitations remain disabled pending the verified-backup/migration/provider prerequisites.
+
 ## Implemented workflows
 
-- **FairPay Twin:** deterministic integer-paise calculations; overnight shifts; unpaid breaks; organization policies; expected-vs-recorded comparison; persisted payroll reviews; employer correction; worker-confirmed closure.
+- **Fairness Twin:** deterministic integer-paise calculations; overnight shifts; unpaid breaks; organization policies; expected-vs-recorded comparison; persisted payroll reviews; employer correction; worker-confirmed closure.
 - **ProofLoop / Fairness Replay:** a readable event timeline with timestamps, roles, input/output snapshots and before/after payroll amounts. Business changes and events commit together. Application roles cannot edit/delete the history.
 - **SafeSignal:** anonymous concern submission without an employee-account link; cryptographically random reference/token; SHA-256 token hashes in a private schema; secret-based tracking; sequential employer mitigation workflow.
 - **RestGuard:** configured long-shift, rest-window, overlap, repeated-overtime and consecutive-day warnings; interactive schedule what-if; explicit administrator confirmation before persistence.
 - **Two interfaces and two sectors:** responsive worker workspace and employer command center; separate synthetic construction and hospital organizations, accounts, schedules, policies and permissions.
-- **Saarthi:** English, Tamil and Hindi core interface translations and text guidance; optional browser speech; optional server-side Google Gemini structured explanations with validated fallbacks. **Live Gemini is disabled by the owner's choice during verification.**
+- **Saarthi:** English, Tamil and Hindi core interface translations and text guidance; optional browser speech; optional server-side Google Gemini structured explanations with validated fallbacks. **Live requests currently fall back after Google provider errors; genuine Gemini generation is not yet verified.**
 
 The seed contains the required construction example: **10 payable hours × configured ₹100/hour, 8 regular hours, 1.5× overtime → ₹1,100 expected vs ₹950 recorded → ₹150 potential difference.** The hospital has a **07:00 → 13:00 six-hour rest gap** against an eleven-hour demonstration policy. Moving the proposed start to 18:00 clears that rest warning. These are configured example policies, not universal legal requirements.
 
@@ -50,12 +52,11 @@ Open **http://127.0.0.1:5173** and choose a worker/employer demo. Role/industry 
 ```powershell
 npm run typecheck
 npm test
-npm run test:rls
-npm run test:e2e
+npm run test:rls:readonly
 npm run build
 ```
 
-Browser tests need a running frontend/backend and Chrome on Windows (or installed Playwright Chromium elsewhere). Live RLS tests need the dedicated provisioned project. Tests append clearly marked synthetic QA records; never point them at production employee data. See [setup](docs/SETUP.md) for fresh-project provisioning and environment details.
+Run the complete mutating browser suite only through `npx vitest run --config tests/functional.config.ts` with the documented isolated PostgreSQL runtime. Never point it at the existing hosted project. Chrome is used on Windows; install Playwright Chromium elsewhere. See [setup](docs/SETUP.md) for current environment boundaries.
 
 For SELECT-only tenant-isolation checks, use `npm run test:rls:readonly`. The [engineering optimization report](docs/OPTIMIZATION_REPORT.md) records baseline/final results and the exact read-only browser subset; it does not claim a new official evaluation score.
 
@@ -63,7 +64,7 @@ For SELECT-only tenant-isolation checks, use `npm run test:rls:readonly`. The [e
 
 The requested development deployment is **Vercel**, using the existing project renamed in place to `nyaveris-ai`. The Vite frontend and Node.js API function share [https://nyaveris-ai.vercel.app](https://nyaveris-ai.vercel.app). See the [Vercel deployment and domain guide](docs/VERCEL_DEPLOYMENT.md).
 
-The Dockerfile and [Cloud Run deployment guide](docs/DEPLOYMENT.md) remain available for portability. **The official FairShift hackathon submission guide requires Google Cloud Run; this verified Vercel deployment does not satisfy that hosting rule.** No verified Cloud Run URL is recorded.
+The Dockerfile and [Cloud Run deployment guide](docs/DEPLOYMENT.md) remain available for portability. **The earlier project brief records a Cloud Run hosting rule; Vercel does not satisfy that recorded rule.** No verified Cloud Run URL is recorded.
 
 ## Security and inclusion
 

@@ -1,4 +1,4 @@
-"""Upload required environment values to the explicitly linked FairShift project.
+"""Upload required environment values to the explicitly linked NYAVERIS AI project.
 
 Values travel through stdin, never CLI arguments, stdout, or tracked files.
 """
@@ -10,7 +10,7 @@ import subprocess
 root = pathlib.Path(__file__).resolve().parents[1]
 link = json.loads((root / '.vercel/project.json').read_text())
 if link.get('projectId') != 'prj_GSHTnszr49w8p7rico2kgkwjmAiA' or link.get('orgId') != 'team_6vANYH69QjISvoyXFvxfplkq':
-    raise SystemExit('Project link does not match the verified FairShift Vercel target.')
+    raise SystemExit('Project link does not match the verified NYAVERIS AI Vercel target.')
 values = {}
 for line in (root / '.env').read_text(encoding='utf-8-sig').splitlines():
     if '=' in line and not line.lstrip().startswith('#'):
